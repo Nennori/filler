@@ -1,0 +1,170 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Filler project's API server",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/game": {
+            "post": {
+                "summary": "Create new game",
+                "operationId": "createGame",
+                "requestBody": {
+                    "description": "Pass game data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "width",
+                                    "height"
+                                ],
+                                "properties": {
+                                    "width": {
+                                        "type": "integer"
+                                    },
+                                    "height": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Поле создано",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid data"
+                    }
+                }
+            }
+        },
+        "/api/game/{gameId}": {
+            "get": {
+                "summary": "Make step in game",
+                "operationId": "getState",
+                "parameters": [
+                    {
+                        "name": "gameId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ход успешно сделан"
+                    },
+                    "400": {
+                        "description": "Неправильные параметры запроса"
+                    },
+                    "403": {
+                        "description": "Игрок с указанным номером не может сейчас ходить"
+                    },
+                    "404": {
+                        "description": "Игра с указанным ID не существует"
+                    },
+                    "409": {
+                        "description": "Игрок с указанным номером не может выбрать указанный цвет"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ControllerException": {
+                "title": "ControllerException",
+                "description": "ControllerException model",
+                "properties": {
+                    "message": {
+                        "title": "message",
+                        "description": "Response message",
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ControllerException"
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": "Ход успешно сделан"
+            },
+            "400": {
+                "description": "Неправильные параметры запроса"
+            },
+            "403": {
+                "description": "Игрок с указанным номером не может сейчас ходить"
+            },
+            "404": {
+                "description": "Игра с указанным ID не существует"
+            },
+            "409": {
+                "description": "Игрок с указанным номером не может выбрать указанный цвет"
+            }
+        },
+        "parameters": {
+            "gameId": {
+                "name": "gameId",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "playerId": {
+                "name": "playerId",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2
+                    ]
+                }
+            },
+            "color": {
+                "name": "color",
+                "in": "query",
+                "description": "Selected color",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "blue",
+                        "green",
+                        "cyan",
+                        "red",
+                        "magenta",
+                        "yellow",
+                        "white"
+                    ]
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
