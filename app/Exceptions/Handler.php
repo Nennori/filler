@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,4 +40,23 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ValidationException) {
+            return response()->json([
+                'message' => 'Неправильные параметры запроса'
+            ], 400);
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json([
+                'message' => 'Игра с указанным ID не существует',
+            ], 404);
+        }
+
+
+        return parent::render($request, $e);
+    }
+
 }

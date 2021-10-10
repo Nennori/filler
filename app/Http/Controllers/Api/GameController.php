@@ -14,19 +14,20 @@ class GameController extends Controller
      *     path="/api/game",
      *     operationId="createGame",
      *     summary="Create new game",
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="width",
+     *         in="query",
      *         required=true,
-     *         description="Pass game data",
-     *         @OA\JsonContent(
-     *             required={"width", "height"},
-     *             @OA\Property(
-     *                 property="width",
-     *                 type="integer"
-     *             ),
-     *             @OA\Property(
-     *                 property="height",
-     *                 type="integer"
-     *             )
+     *         @OA\Schema(
+     *             type="integer",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="height",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
      *         )
      *     ),
      *     @OA\Response(
@@ -121,28 +122,81 @@ class GameController extends Controller
      *         in="path",
      *         required=true,
      *         @OA\Schema(
-     *             type="string",
+     *             type="string"
      *         )
      *     ),
      *     @OA\Response(
-     *         response=201,
-     *         description="Ход успешно сделан",
+     *         response=200,
+     *         description="Game state",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="string",
+     *                 description="game id"
+     *             ),
+     *             @OA\Property(
+     *                 property="field",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="width",
+     *                     type="integer",
+     *                     description="field width"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="height",
+     *                     type="integer",
+     *                     description="field height"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="cells",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(
+     *                             property="color",
+     *                             type="string",
+     *                             description="cell color"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="playerId",
+     *                             type="integer",
+     *                             description="player id"
+     *                         )
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="players",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             description="player id"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="color",
+     *                             type="string",
+     *                             description="player color"
+     *                         )
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="currentPlayerId",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="winnerPlayerId",
+     *                     type="integer"
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=400,
      *         description="Неправильные параметры запроса",
      *     ),
      *     @OA\Response(
-     *         response=403,
-     *         description="Игрок с указанным номером не может сейчас ходить",
-     *     ),
-     *     @OA\Response(
      *         response=404,
      *         description="Игра с указанным ID не существует",
-     *     ),
-     *     @OA\Response(
-     *         response=409,
-     *         description="Игрок с указанным номером не может выбрать указанный цвет",
      *     )
      * )
      */
