@@ -52,7 +52,7 @@ class GameController extends Controller
     }
 
     /**
-     * @OA\PUT(
+     * @OA\Put(
      *     path="/api/game/{gameId}",
      *     operationId="makeStep",
      *     summary="Make step in game",
@@ -107,7 +107,6 @@ class GameController extends Controller
      */
     public function makeStep(MakeStepRequest $request, Game $game)
     {
-//        $game = Game::where('id', $id)->firstOrFail();
         $game->makeStep($request->only('playerId', 'color'));
         return response()->json(['message' => 'Ход успешно сделан'], 201);
     }
@@ -116,7 +115,7 @@ class GameController extends Controller
      * @OA\Get(
      *     path="/api/game/{gameId}",
      *     operationId="getState",
-     *     summary="Make step in game",
+     *     summary="Get state of the game",
      *     @OA\Parameter(
      *         name="gameId",
      *         in="path",

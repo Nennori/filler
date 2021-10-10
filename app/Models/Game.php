@@ -42,6 +42,7 @@ class Game extends Model
         $field->refresh();
         $field->fillField();
         $game->field()->associate($field);
+        $game->currentPlayer()->associate($secondPlayer);
         $game->save();
         $game->addPlayers($firstPlayer, $secondPlayer);
         return $game;
@@ -51,10 +52,13 @@ class Game extends Model
     {
         $player = Player::findOrFail($data['playerId']);
         $color = Color::where('name', $data['color'])->firstOrFail();
-        if ($this->winner_player_id !== null || $player->id == $this->currentPlayer_id) {
+        if (empty($player)) {
+            throw new ControllerException('bad request', 400);
+        }
+        if ($this->winner_player_id !== null || $player->id == $this->current_player_id) {
             throw new ControllerException('Игрок с указанным номером не может сейчас ходить', 403);
         }
-        if ($color->id === $player->color_id || $color->id === $this->currentPlayer->color_id) {
+        if ($color->id === $player->color_id || ($this->currentPlayer !== null && $color->id === $this->currentPlayer->color_id)) {
             throw new ControllerException('Игрок с указанным номером не может выбрать указанный цвет', 409);
         }
         $this->fillCells($player, $color);
@@ -78,19 +82,21 @@ class Game extends Model
         }
         foreach ($cells as $cell) {
             $cell->color()->associate($color);
+            $cell->save();
         }
         $newCellCount = $cells->count();
         $opponentCellCount = $opponent->cells->count();
-        if ($initialCellCount >= $opponentCellCount && $newCellCount > $opponentCellCount) {
+        if ($initialCellCount > $opponentCellCount && $newCellCount > $opponentCellCount) {
             $this->winner()->associate($player);
             $this->currentPlayer()->dissociate();
-        } elseif ($initialCellCount <= $opponentCellCount && $newCellCount < $opponentCellCount) {
+        } elseif ($initialCellCount < $opponentCellCount && $newCellCount < $opponentCellCount) {
             $this->winner()->associate($opponent);
             $this->currentPlayer()->dissociate();
         } else {
             $this->currentPlayer()->associate($player);
-            $player->color()->associate($color);
         }
+        $player->color()->associate($color);
+        $player->save();
         $this->save();
     }
 
@@ -158,8 +164,8 @@ class Game extends Model
                 'cells' => $cells,
             ],
             'players' => $players,
-            'currentPlayerId' => $this->current_player_id,
-            'winnerPlayerId' => $this->winner_player_id
+            'currentPlayerId' => empty($this->current_player_id) ? 0 : $this->current_player_id,
+            'winnerPlayerId' => empty($this->winner_player_id) ? 0 : $this->current_player_id
         ]);
     }
 }

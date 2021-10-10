@@ -56,7 +56,7 @@
         },
         "/api/game/{gameId}": {
             "get": {
-                "summary": "Make step in game",
+                "summary": "Get state of the game",
                 "operationId": "getState",
                 "parameters": [
                     {
@@ -65,6 +65,67 @@
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ход успешно сделан"
+                    },
+                    "400": {
+                        "description": "Неправильные параметры запроса"
+                    },
+                    "403": {
+                        "description": "Игрок с указанным номером не может сейчас ходить"
+                    },
+                    "404": {
+                        "description": "Игра с указанным ID не существует"
+                    },
+                    "409": {
+                        "description": "Игрок с указанным номером не может выбрать указанный цвет"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Make step in game",
+                "operationId": "makeStep",
+                "parameters": [
+                    {
+                        "name": "gameId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "playerId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                1,
+                                2
+                            ]
+                        }
+                    },
+                    {
+                        "name": "color",
+                        "in": "query",
+                        "description": "Selected color",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "blue",
+                                "green",
+                                "cyan",
+                                "red",
+                                "magenta",
+                                "yellow",
+                                "white"
+                            ]
                         }
                     }
                 ],
@@ -103,63 +164,6 @@
                 "type": "object",
                 "xml": {
                     "name": "ControllerException"
-                }
-            }
-        },
-        "responses": {
-            "201": {
-                "description": "Ход успешно сделан"
-            },
-            "400": {
-                "description": "Неправильные параметры запроса"
-            },
-            "403": {
-                "description": "Игрок с указанным номером не может сейчас ходить"
-            },
-            "404": {
-                "description": "Игра с указанным ID не существует"
-            },
-            "409": {
-                "description": "Игрок с указанным номером не может выбрать указанный цвет"
-            }
-        },
-        "parameters": {
-            "gameId": {
-                "name": "gameId",
-                "in": "path",
-                "required": true,
-                "schema": {
-                    "type": "string"
-                }
-            },
-            "playerId": {
-                "name": "playerId",
-                "in": "query",
-                "required": true,
-                "schema": {
-                    "type": "integer",
-                    "enum": [
-                        1,
-                        2
-                    ]
-                }
-            },
-            "color": {
-                "name": "color",
-                "in": "query",
-                "description": "Selected color",
-                "required": true,
-                "schema": {
-                    "type": "string",
-                    "enum": [
-                        "blue",
-                        "green",
-                        "cyan",
-                        "red",
-                        "magenta",
-                        "yellow",
-                        "white"
-                    ]
                 }
             }
         }

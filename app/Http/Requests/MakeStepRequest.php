@@ -25,7 +25,6 @@ class MakeStepRequest extends FormRequest
     public function rules()
     {
         return [
-            'gameId' => 'required|string',
             'playerId' => ['required', 'integer', Rule::in(1, 2)],
             'color' => ['required', 'string', Rule::in("blue", "green", "cyan", "red", "magenta", "yellow", "white")]
         ];
